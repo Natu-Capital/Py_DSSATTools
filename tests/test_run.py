@@ -674,5 +674,40 @@ def test_cassava():
     assert np.isclose(11711, results['harwt'], rtol=0.01)
     dssat.close()
 
+def test_freeze_soya():
+    """
+    Experiment CLMO8501, treatment 1. The weather data is modified to induce
+    freezing conditions. Created to work on the Issue 60. 
+    """
+    soil = SoilProfile.from_file(
+        "IBSB910032", 
+        os.path.join(DATA_PATH, "Soil", "SOIL.SOL")
+    )
+    weather_station = WeatherStation.from_files([
+        os.path.join(DATA_PATH, 'Weather', "CLMO8501.WTH"),
+    ])
+    
+    df = weather_station.to_dataframe()
+    kwargs = weather_station._Record__data
+    for i in range(100, 110): df.loc[i, 'tmin'] = -3.
+    kwargs['table'] = df
+    weather_station = WeatherStation(**kwargs)
+    treatments = read_filex(os.path.join(DATA_PATH, 'Soybean', "CLMO8501.SBX"))
+    treatment = treatments[1]
+    treatment["Field"]["wsta"] = weather_station
+    treatment["Field"]["id_soil"] = soil 
+
+    dssat = DSSAT(os.path.join(TMP, 'dssat_test'))
+    results = dssat.run_treatment(
+        field=treatment["Field"], 
+        cultivar=treatment['Cultivar'].crop, 
+        planting=treatment["Planting"],
+        initial_conditions=treatment["InitialConditions"],
+        irrigation=treatment["Irrigation"],
+        simulation_controls=treatment["SimulationControls"]
+    )
+    assert 'Freeze occurred' in dssat.stdout
+    dssat.close()
+
 if __name__ == "__main__":
     test_wheat()

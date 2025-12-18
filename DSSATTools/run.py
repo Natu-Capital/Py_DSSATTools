@@ -326,8 +326,8 @@ class DSSAT:
         out_dict = {
             k.lower(): int(v) if int(v) != -99 else None
             for k, v in zip(
-                self.stdout.split("\n")[0][10:].split(),
-                self.stdout.split("\n")[2][10:].split(),
+                self.stdout.split("\n")[-3][10:].split(),
+                self.stdout.split("\n")[-1][10:].split(),
             )
         }
         return out_dict

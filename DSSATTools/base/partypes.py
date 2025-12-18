@@ -602,6 +602,30 @@ class TabularRecord(Record):
     
     def __bool__(self):
         return len(self.table) > 0
+    
+    def to_dataframe(self):
+        """
+        Returns the table as a pandas DataFrame. Useful to get the WeatherStation
+        or SoilProfile data as a DataFrame
+        """
+        if not self.table:
+            return DataFrame()
+
+        data = []
+        for record_element in self.table:
+            row_data = {}
+            for key in record_element.dtypes.keys():
+                value = record_element[key]
+                # Extract the actual value from the custom type objects
+                if isinstance(value, (DateType, CodeType, NumberType, DescriptionType)):
+                    row_data[key] = date(value.year, value.month, value.day) if isinstance(value, DateType) else value
+                elif isinstance(value, (date, datetime)):
+                    row_data[key] = value
+                else:
+                    row_data[key] = value
+            data.append(row_data)
+        return DataFrame(data)
+
 
 def parse_pars_line(line, fmt):
     """

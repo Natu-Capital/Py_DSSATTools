@@ -92,6 +92,18 @@ def test_wrong_insi():
 def test_create_missing():
     return 
 
+def test_to_dataframe():
+    files = ([
+        os.path.join(WEATHER_PATH, "GAPL9626.WTH"),
+    ])
+    weather = WeatherStation.from_files(files)
+    df = weather.to_dataframe()
+    kwargs = weather._Record__data
+    df.loc[32, 'tmin'] = -3.
+    kwargs['table'] = df
+    weather = WeatherStation(**kwargs)
+    assert weather.table[32]['tmin'] == -3.
+
 if __name__ == "__main__":
     test_create_sucessful()
 
