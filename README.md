@@ -14,6 +14,11 @@ The new version aims to be more intuitive for the users familiar with the model,
 - When the model is run using the `DSSAT.run_treatment` method, all the output files are stored in the `DSSAT.output_files` attribute. The files are stored as a string.
 - The `DSSAT.run_treatment` returns a dictionary with the standard output of the CSM.
 
+## Cite 
+
+You can cite DSSATTools as
+
+`Quintero, D. (2026). DSSATTools: a Python library for crop modeling with DSSAT (3.0). Zenodo. https://doi.org/10.5281/zenodo.18481764`
 
 ## Installation:
 You can install the library using Python pip. **The library has only been tested for a Linux environment. It is not guaranteed that it will work in Windows.** If you have a Windows machine I recommend you to use WSL, or Google Colab.
